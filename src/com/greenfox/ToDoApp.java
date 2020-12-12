@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +16,14 @@ public class ToDoApp {
     public static void main(String[] args) {
         if (args.length == 0) {
             printInstructions();
-        }
-        if (args[0].equals("-l")){
+        } else if (args[0].equals("-l")) {
             listTasks();
-        }
-        if (args[0].equals("-a")){
+        } else if (args[0].equals("-a")) {
             String task = args[1];
             addTask(task);
+        } else if (args[0].equals("-r")) {
+            String taskNumber = args[1];
+            removeTask(taskNumber);
         }
     }
 
@@ -70,6 +72,7 @@ public class ToDoApp {
             System.out.println((i + 1) + " - " + checkbox + line[1]);
         }
     }
+
     private static void addTask(String task) {
         if (task.isEmpty()) {
             System.out.println("Nem lehetséges új feladat hozzáadása: nincs megadva a feladat!");
@@ -81,6 +84,26 @@ public class ToDoApp {
             Files.write(file.toPath(), ("\n" + "|" + task).getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
         } catch (IOException e) {
             System.out.println("Can't write file.");
+            e.printStackTrace();
+        }
+    }
+
+    private static void removeTask(String taskNumber) {
+        if (taskNumber.isEmpty()) {
+            System.out.println("Nem lehetséges az eltávolítás: nem adott meg indexet!");
+            return;
+        }
+
+        try {
+            List<String> lines = readFile();
+            lines.remove(Integer.parseInt(taskNumber) - 1);
+            Files.write(Paths.get("Tasks.txt"), lines);
+        } catch (IndexOutOfBoundsException i) {
+            System.out.println("Nem lehetséges az eltávolítás: túlindexelési probléma adódott!");
+        } catch (NumberFormatException n) {
+            System.out.println("Nem lehetséges az eltávolítás: a megadott index nem szám!");
+        } catch (IOException e) {
+            System.out.println("File not found.");
             e.printStackTrace();
         }
     }
