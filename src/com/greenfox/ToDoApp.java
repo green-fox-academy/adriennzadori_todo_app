@@ -27,6 +27,9 @@ public class ToDoApp {
         } else if (args[0].equals("-c")) {
             String completedTaskNumber = args.length > 1 ? args[1] : "";
             completeTask(completedTaskNumber);
+        } else {
+            System.out.println("Nem támogatott argumentum!");
+            printInstructions();
         }
     }
 
