@@ -24,6 +24,9 @@ public class ToDoApp {
         } else if (args[0].equals("-r")) {
             String taskNumber = args[1];
             removeTask(taskNumber);
+        } else {
+            System.out.println("Nem támogatott argumentum!");
+            printInstructions();
         }
     }
 
