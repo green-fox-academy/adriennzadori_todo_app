@@ -19,11 +19,14 @@ public class ToDoApp {
         } else if (args[0].equals("-l")) {
             listTasks();
         } else if (args[0].equals("-a")) {
-            String task = args[1];
+            String task = args.length > 1 ? args[1] : "";
             addTask(task);
         } else if (args[0].equals("-r")) {
-            String taskNumber = args[1];
+            String taskNumber = args.length > 1 ? args[1] : "";
             removeTask(taskNumber);
+        } else if (args[0].equals("-c")) {
+            String completedTaskNumber = args.length > 1 ? args[1] : "";
+            completeTask(completedTaskNumber);
         } else {
             System.out.println("Nem támogatott argumentum!");
             printInstructions();
@@ -105,6 +108,27 @@ public class ToDoApp {
             System.out.println("Nem lehetséges az eltávolítás: túlindexelési probléma adódott!");
         } catch (NumberFormatException n) {
             System.out.println("Nem lehetséges az eltávolítás: a megadott index nem szám!");
+        } catch (IOException e) {
+            System.out.println("File not found.");
+            e.printStackTrace();
+        }
+    }
+
+    private static void completeTask(String completedTaskNumber) {
+        if (completedTaskNumber.isEmpty()) {
+            System.out.println("Nem lehetséges a feladat végrehajtása: nem adtál meg indexet!");
+            return;
+        }
+
+        try {
+            List<String> lines = readFile();
+            String modifiedLine = "-" + lines.get(Integer.parseInt(completedTaskNumber) - 1);
+            lines.set(Integer.parseInt(completedTaskNumber) - 1, modifiedLine);
+            Files.write(Paths.get("Tasks.txt"), lines);
+        } catch (IndexOutOfBoundsException i) {
+            System.out.println("Nem lehetséges a feladat végrehajtása: túlindexelési probléma adódott!");
+        } catch (NumberFormatException n) {
+            System.out.println("Nem lehetséges a feladat végrehajtása: a megadott index nem szám!");
         } catch (IOException e) {
             System.out.println("File not found.");
             e.printStackTrace();
